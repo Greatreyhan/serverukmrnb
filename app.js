@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
+const cors = require('cors');
 // connect to database
 const url = 'mongodb+srv://justrezy007:Kiko030102@backly.nmfap.mongodb.net/?retryWrites=true&w=majority'
 
@@ -23,6 +24,11 @@ const adminRouter = require('./routes/admin');
 const apiRouter = require('./routes/api')
 
 var app = express();
+
+// allow cors
+app.use(cors({
+  origin: 'http://localhost:3001'
+}))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
