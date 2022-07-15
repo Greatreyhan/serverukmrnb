@@ -27,7 +27,7 @@ var app = express();
 
 // allow cors
 app.use(cors({
-  origin: 'http://localhost:3001'
+  origin: 'https://rnbinterface.web.app'
 }))
 
 // view engine setup

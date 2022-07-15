@@ -1,4 +1,5 @@
 const Article = require("../models/Article")
+const Competition = require("../models/Competition")
 const Tag = require('../models/Tag')
 
 module.exports = {
@@ -55,5 +56,14 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+    getCompetitionMenu : async (req,res) =>{
+        try{
+            const competitionsMenu = await Competition.find().select('_id imageUrl title date link deadline company description')
+            res.status(200).json({competitionsMenu})
+        }
+        catch(error){
+            console.log(error)
+        }
+    },
 }

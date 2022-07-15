@@ -22,6 +22,12 @@ router.get('/authors/edit/:authorsid', AdminController.editAuthorsView)
 router.put('/authors/edit', uploadSingle, AdminController.editAuthorsAction)
 router.delete('/authors/delete/:authorid', AdminController.deleteAuthors)
 
+// endpoint competition
+router.get('/competitions', AdminController.viewCompetitions)
+router.get('/competitions/add', AdminController.addCompetitionsView)
+router.post('/competitions/add', uploadSingle, AdminController.addCompetitionsAction)
+router.delete('/competitions/delete/:competitionid', AdminController.deleteCompetitions)
+
 // endpoint tags
 router.get('/tags', AdminController.viewTags)
 router.get('/tags/add', AdminController.addTagsView)

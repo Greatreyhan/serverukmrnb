@@ -2,6 +2,7 @@ const Tag = require('../models/Tag')
 const Author = require('../models/Author')
 const Article = require('../models/Article')
 const ImageUrl = require('../models/ImageUrl')
+const Competition = require('../models/Competition')
 const fs = require('fs-extra');
 const path = require('path');
 const cloudinary = require('../utils/cloudinary')
@@ -182,6 +183,83 @@ module.exports = {
         }
   },
 
+   // -------------------------- COMPETITION ----------------------------------------//
+   viewCompetitions : async (req,res) =>{
+    try {
+        const competitions = await Competition.find()
+        const alertMessage = req.flash("alertMessage");
+        const alertStatus = req.flash("alertStatus");
+        const alert = { message: alertMessage, status: alertStatus };
+        res.render('admin/competition/view_competition', {
+          competitions,
+          alert,
+          title: "RnB | Competition",
+        });
+      } catch (error) {
+        res.redirect("/admin/dashboard");
+      }
+    },
+    addCompetitionsView : async (req,res) =>{
+      try {
+          // const tags = await Tag.find();
+          // const authors = await Author.find();
+          res.render("admin/competition/add_competition", {
+            // tags,
+            // authors,
+            title: "RnB | Competition",
+          });
+        } catch (error) {
+          res.redirect("/admin/dashboard");
+        }
+    },
+    addCompetitionsAction: async (req, res) => {
+      try {
+        const { title, company, link, deadline, description } = req.body;
+        // cloudinary
+        const uploader = async (path) => await cloudinary.upload(path,'Images');
+
+        const file = req.file;
+        const {path} = file;
+        const newPath = await uploader(path);
+
+        const newCompetition = {
+          title,
+          date : new Date(),
+          deadline,
+          company,
+          link,
+          description,
+          imageUrl: newPath.url,
+          idSecret : newPath.id
+        };
+        const competition = await Competition.create(newCompetition)
+        req.flash("alertMessage", `Success create field ${title}`);
+        req.flash("alertStatus", "success");
+        res.redirect("/admin/competitions");
+      } catch (error) {
+        req.flash("alertMessage", `${error.message}`);
+        req.flash("alertStatus", "danger");
+        res.redirect("/admin/competitions");
+      }
+    },
+    deleteCompetitions : async (req,res) =>{
+      try{
+        const {competitionid} = req.params;
+        const competition = await Competition.findOne({_id: competitionid})
+        // await fs.unlink(path.join(`public/${article.imageUrl}`));
+        const deleteImage = async (id) => await cloudinary.delete(id)
+        const respon = await deleteImage(competition.idSecret)
+        await competition.remove()
+        req.flash("alertMessage", `Success Remove Competition`);
+        req.flash("alertStatus", "success");
+        res.redirect("/admin/competitions");
+      }
+      catch(error){
+        req.flash("alertMessage", `${error.message}`);
+        req.flash("alertStatus", "danger");
+        res.redirect("/admin/competitions");
+      }
+    },
     // -------------------------- AUTHORS ----------------------------------------//
     viewAuthors : async (req,res) =>{
         try {
